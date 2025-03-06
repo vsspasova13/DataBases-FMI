@@ -1,0 +1,95 @@
+USE movies
+
+SELECT ms.NAME FROM MOVIESTAR ms
+JOIN STARSIN s ON s.STARNAME = ms.NAME
+WHERE ms.GENDER = 'm' AND  s.MOVIETITLE = 'The Usual Suspects'
+
+SELECT s.STARNAME
+FROM STARSIN s
+JOIN MOVIE m ON m.TITLE=s.MOVIETITLE
+WHERE m.YEAR=1995 AND m.STUDIONAME='MGM'
+
+SELECT DISTINCT m.NAME
+FROM MOVIEEXEC m
+JOIN MOVIE e ON m.CERT# = e.PRODUCERC#
+WHERE e.STUDIONAME = 'MGM'
+
+SELECT m.TITLE
+FROM MOVIE m
+JOIN MOVIE dr ON dr.TITLE='Star Wars'
+WHERE m.LENGTH > dr.LENGTH 
+
+SELECT m.NAME
+FROM MOVIEEXEC m
+JOIN MOVIEEXEC e ON e.NAME='Stephen Spielberg'
+WHERE m.NETWORTH > e.NETWORTH
+
+
+USE pc
+
+SELECT p.maker, L.speed
+FROM laptop l
+JOIN product p ON L.model=P.model
+WHERE L.hd > 9
+
+--2
+SELECT R.model, P.price
+FROM printer P
+JOIN product R ON R.model=P.model
+WHERE R.maker = 'B'
+
+UNION
+
+SELECT R.model, P.price
+FROM laptop P
+JOIN product R ON R.model=P.model
+WHERE R.maker = 'B'
+
+UNION
+
+SELECT R.model, P.price
+FROM pc P
+JOIN product R ON R.model=P.model
+WHERE R.maker = 'B'
+
+--4
+SELECT DISTINCT P.hd
+FROM pc P
+JOIN pc K ON NOT K.code = P.code AND K.hd=P.hd
+
+--5
+SELECT DISTINCT P.model, K.model
+FROM pc P
+JOIN pc K ON K.speed=P.speed AND  K.ram=P.ram AND NOT K.model=P.model AND P.code<K.code
+
+--6
+SELECT DISTINCT P.maker 
+FROM product P, pc K1, pc K2
+WHERE K1.speed>=400 AND 
+K1.code!=K2.code AND
+K1.model = P.model AND 
+K1.model=K2.MODEL
+
+---
+USE ships
+
+--1
+SELECT S.NAME
+FROM SHIPS S
+JOIN CLASSES C ON C.CLASS = S.CLASS
+WHERE C.DISPLACEMENT >50000
+
+--2
+SELECT S.NAME, C.DISPLACEMENT, C.NUMGUNS
+FROM CLASSES C, SHIPS S, OUTCOMES O
+WHERE S.CLASS = C.CLASS
+AND   O.BATTLE = 'Guadalcanal'
+AND   O.SHIP = S.NAME
+
+--3
+SELECT C1.COUNTRY
+FROM CLASSES C1, CLASSES C2
+WHERE C1.TYPE = 'bb' AND C2.TYPE = 'bc' AND C1.COUNTRY=C2.COUNTRY
+
+--4
+
