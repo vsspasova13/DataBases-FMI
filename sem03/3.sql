@@ -72,14 +72,17 @@ WHERE a.price = (
 );
 
 
---5--??
+--5
 SELECT P.maker
 FROM product P
 WHERE P.model IN (SELECT R.MODEL
 				  FROM printer R
-				  WHERE R.price = (SELECT MIN(PR.PRICE)
-								   FROM printer PR
-								   WHERE PR.color = 'y'))
+				  WHERE  R.color = 'y' AND R.price 
+				  <= ALL
+				  (SELECT (PR.PRICE)			                        
+				   FROM printer PR
+				   WHERE PR.color = 'y'))
+								      
 
 --6
 SELECT DISTINCT PR.maker
@@ -124,9 +127,12 @@ WHERE B.NAME IN (SELECT O.BATTLE
 								  WHERE S.CLASS = 'Kongo'))
 
 
---5--??
+--5--
 SELECT DISTINCT S.CLASS, S.NAME
 FROM SHIPS S
 WHERE S.CLASS IN (SELECT C.CLASS
 				  FROM CLASSES C
-				  JOIN CLASSES CL ON C.NUMGUNS >= CL.NUMGUNS AND C.BORE = CL.BORE)
+				  WHERE C.NUMGUNS >= ALL (SELECT CL.NUMGUNS
+										  FROM CLASSES CL
+										  WHERE C.BORE=CL.BORE))
+ORDER BY S.NAME
