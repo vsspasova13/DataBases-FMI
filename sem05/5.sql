@@ -1,0 +1,129 @@
+USE pc
+
+
+--1
+SELECT AVG(p.speed) AS 'AvgSpeed'
+FROM pc p
+
+--2
+SELECT P.maker, AVG(L.screen) AS 'AvgScreen'
+FROM laptop L
+JOIN product P ON P.model=L.model
+GROUP BY P.maker
+
+--3
+SELECT AVG(L.SPEED) AS 'AVGSPEED'
+FROM laptop L
+WHERE L.price>1000
+
+--4
+SELECT AVG(P.price)
+FROM product R
+JOIN pc P ON R.model=P.model
+WHERE R.maker='A'
+
+--5
+SELECT 'B' as 'maker', AVG(price) as 'AvgPrice'
+FROM  (
+SELECT P.price 
+FROM product R
+JOIN pc P ON R.model=P.model 
+WHERE R.maker='B' 
+UNION ALL
+SELECT L.price
+FROM product R
+JOIN laptop L ON L.model=R.model
+WHERE R.maker='B'
+)AS combined
+
+--6
+SELECT P.speed, AVG(P.price)
+FROM pc P
+GROUP BY P.speed
+
+--7
+SELECT DISTINCT(R.maker), COUNT(DISTINCT p.code) AS 'COUNT'
+FROM pc P
+JOIN product R ON R.model = P.model
+GROUP BY R.maker
+HAVING COUNT(DISTINCT p.code) >= 3
+
+--8
+SELECT DISTINCT R.maker, P.price
+FROM product R 
+JOIN pc P ON R.model = P.model
+WHERE P.price=(SELECT MAX(price) FROM pc)
+
+--9
+SELECT P.speed, AVG(P.price) AS 'Price'
+FROM pc P
+GROUP BY P.speed
+HAVING P.speed > 800
+
+--10
+SELECT R.maker, AVG(P.hd)
+FROM product R
+JOIN pc P ON P.model=R.model
+WHERE R.maker IN (
+	SELECT DISTINCT R1.maker
+	FROM product R1
+	JOIN printer PR ON PR.model = R1.model)
+GROUP BY R.maker
+
+
+----
+USE ships
+
+--1
+SELECT COUNT(DISTINCT C.CLASS)
+FROM CLASSES C
+WHERE C.TYPE = 'bb'
+
+--2
+SELECT C.CLASS, AVG(C.NUMGUNS) AS 'avgGuns'
+FROM CLASSES C
+WHERE C.TYPE='bb'
+GROUP BY C.CLASS
+
+--3
+SELECT AVG(C.NUMGUNS)
+FROM CLASSES C
+WHERE C.TYPE='bb'
+
+--4
+SELECT C.CLASS, MIN(C.LAUNCHED), MAX(C.LAUNCHED)
+FROM SHIPS C
+GROUP BY C.CLASS
+
+--5
+SELECT S.CLASS, COUNT(DISTINCT S.NAME)
+FROM SHIPS S
+WHERE S.NAME IN 
+(SELECT O.SHIP
+ FROM OUTCOMES O
+ WHERE O.RESULT='sunk')
+ GROUP BY S.CLASS
+
+ --6
+ SELECT S.CLASS, COUNT(DISTINCT S.NAME)
+FROM SHIPS S
+JOIN OUTCOMES O ON O.SHIP=S.NAME
+WHERE O.RESULT='sunk'
+AND S.CLASS IN 
+(SELECT CLASS
+FROM SHIPS
+GROUP BY CLASS
+HAVING COUNT(NAME) > 2
+) 
+GROUP BY S.CLASS
+
+--7
+SELECT C.COUNTRY, AVG(C.BORE)
+FROM CLASSES C
+JOIN SHIPS S ON S.CLASS=C.CLASS
+GROUP BY C.COUNTRY
+
+
+
+ 
+
